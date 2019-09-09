@@ -32,10 +32,13 @@ class findWt(readObs):
         self.file2 = os.path.join(self.dirName, self.base2 + self.no + self.suffix)
         self.estCount = 0
         self.growPerDiff = 0
+        self.counterOnt = 0
+        self.counterOwn = 0
         self.rootDic = rootDic
         readObs.__init__(self)
         newTT.__init__(self,ownNo,rootDic)
         self.kfObj = kalman(regN, ownNo)
+
         
         
                  #(self,regNo,inPCurr,seqNeigh,currNeighbor,currNode,tRegd,currentSource,bModObj)
@@ -55,6 +58,7 @@ class findWt(readObs):
             ontObjList[ownNO-1].fetchOtherObs(ownNO,orig,dest,self.rootDic,ontObjList)
             
             if (len(self.qresOther)!=0):
+                self.fid1 = open(self.file1, 'a')
                 for v, e in self.qresOther.items():  
                     #print("len of query in other AGV(s) for set of nodes:", len(e))
                     if len(e) >0:
@@ -70,15 +74,26 @@ class findWt(readObs):
                 
                 maxKey = max(self.XObs, key=int)
                 self.xObs = self.XObs[maxKey]
-                
+                self.counterOnt += self.counterOnt
+                outtxt1 = str(pathNo) + ' ' + str(ownNO) + ' ' + str(self.counterOnt) + ' ' + str(self.xObs) + '\n'  # ' '+str(X_teqd)+
+                self.fid1.write(outtxt1)
+                self.fid1.close()
             else:
                 if (currNode != currSource):
                     orig=it.pi_v[currNode]
                     dest = currNode
                     self.xObs = self.edge_cost[orig][dest]
-                    
+                    self.counterOwn += self.counterOwn
+                    outtxt2 = str(pathNo) + ' ' + str(ownNO) + ' ' + str(self.counterOnt) + ' ' + str(self.xObs) + '\n'
+                    self.fid2 = open(self.file2, 'a')
+                    self.fid2.write(outtxt2)
+                    self.fid2.close()
                 elif (currNode == currSource):
-                    self.getLegacy(mObj, currNode, seqNeigh, tRegd)    
+                    self.getLegacy(mObj, currNode, seqNeigh, tRegd)
+                    outtxt2 = str(pathNo) + ' ' + str(ownNO) + ' ' + str(self.counterOnt) + ' ' + str(self.xObs) + '\n'
+                    self.fid2 = open(self.file2, 'a')
+                    self.fid2.write(outtxt2)
+                    self.fid2.close()
                 #end if
             self.XObs.clear() 
             

@@ -36,10 +36,13 @@ class dijsktraCost:
         self.dirName = rootDic
         self.base1 = "Own_TimeKf_U_PU"
         self.base2 = "AcRCYeachPath"
+        self.base1 = "Own_TimeKf_U_PU"
+        self.base3 = "Edges_u_d"
         self.suffix = '.txt'
         #self.ownNo = self.ownNo
         self.f1 = os.path.join(self.dirName, self.base1 + str(self.ownNo) + self.suffix)
         self.f2 = os.path.join(self.dirName, self.base2 + str(self.ownNo) + self.suffix)
+        self.f3 = os.path.join(self.dirName, self.base3 + str(self.ownNo) + self.suffix)
         #self.fileO2 = os.path.join(self.dirName, self.base2 + self.no + self.suffix)
     def findPath(self,k,ontObjList):
         print("Finding path in AGV ", self.ownNo )
@@ -90,6 +93,11 @@ class dijsktraCost:
                         currNeighbor = self.mObj.neighbor_node_no[u][seqNeigh]
                     #end if 
                     if (currNeighbor !=self.source):
+                        outtxt3 = str(self.pathNo) + ' ' + str(self.ownNo) + ' ' + str(u) + ' ' + str(
+                            currNeighbor) + '\n'
+                        self.fid3 = open(self.f3, 'a')
+                        self.fid3.write(outtxt3)
+                        self.fid3.close()
                         itrforOnt = itrforOnt +1
                         #print("inside for and while:itrforfindNextX", itrforfindNextX)
                         self.estCount, self.growPerDiff, edgecost_to_neighbor = self.fObj.findNextX(ontObjList,itrforOnt, self.mObj,it,self.pathNo,
