@@ -15,36 +15,35 @@ from rdflib.plugins.sparql import prepareQuery
 from collections import defaultdict
 #import time
 class newTT():
-    def __init__(self, AGVno, rootDic):
+    def __init__(self,AGVno,rootDic):
         self.qresOther = defaultdict(dict)
         self.dirName = rootDic
         self.baseN = 'AGVont'
         self.suffix = '.owl'
         self.g = Graph()
-
+        
         self.xsdNS = Namespace("http://www.w3.org/2001/XMLSchema#")
         self.xsdFloat = self.xsdNS["float"]
         self.owlNS = Namespace("http://www.w3.org/2002/07/owl#")
-        # < http: // www.semanticweb.org / hilaire / ontologies / 2016 / 4 / untitled - ontology - 87  # >
+        #< http: // www.semanticweb.org / hilaire / ontologies / 2016 / 4 / untitled - ontology - 87  # >
         self.costNS = Namespace("http://www.semanticweb.org/hilaire/ontologies/2016/4/untitled-ontology-87#")
         self.objPropNS = self.owlNS["ObjectProperty"]
         self.dataPropNS = self.owlNS["DatatypeProperty"]
         self.nodeClass = self.costNS["Node"]
-        # self.timeStampNS = self.costNS["timeStamp"]
-        # self.
+        #self.timeStampNS = self.costNS["timeStamp"]
+        #self.
         self.ontFile = os.path.join(self.dirName, self.baseN + str(AGVno) + self.suffix)
 
-    def parseOnt(self, AGVno):
-
+    def parseOnt(self,AGVno):
+        
         self.ontfile = os.path.join(self.dirName, self.baseN + str(AGVno) + self.suffix)
         print('Parsing ont of AGV', AGVno)
         self.g.parse(self.ontfile, format="nt")
         self.g.commit()
-
-    def serializeOnt(self, AGVno, format='nt'):
+    def serializeOnt(self, AGVno, format = 'nt'):
         print('Serializing ont of AGV', AGVno)
         self.g.serialize(destination=self.ontFile, format=format)
-
+        
         self.g.commit()
         
     def addNewTT(self, origin, destination,k,
@@ -104,41 +103,54 @@ class newTT():
               
         
         
-    def fetchOtherObs(self,AGVno,orig,dest,rootDic,ontObjList,k):
+    def fetchOtherObs(self, AGVno, orig, dest, k):
         self.parseOnt(AGVno)
-        strOrg = "node-" + str(orig)
-        strDest = "node-" + str(dest)
-        origin = self.costNS[
-            strOrg]  # URIRef("http://www.semanticweb.org/hilaire/ontologies/2016/4/untitled-ontology-87#node-"+str_curr_u)
+        strOrg = "node-"+str(orig)
+        strDest = "node-"+str(dest)
+        origin= self.costNS[strOrg]#URIRef("http://www.semanticweb.org/hilaire/ontologies/2016/4/untitled-ontology-87#node-"+str_curr_u)
         destination = self.costNS[strDest]
         k = Literal(k, lang="foo")
-        str2 = ("""
-                PREFIX ns: <http://www.semanticweb.org/hilaire/ontologies/2016/4/untitled-ontology-87#>
-                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                SELECT ?mCost
-                WHERE { 
-                        ?edge rdf:type ns:Edge;
-                            ns:origin ?org .
-                        ?edge rdf:type ns:Edge;
-                            ns:destination ?dest .
-                        ?edge rdf:type ns:Edge;
-                            ns:timeStamp ?k .
-                        ?edge rdf:type ns:Edge;
-                            ns:travelTime ?mCost .
-                 }""")
+        #timeStamp = self.costNS[k]
+        #timeStamp = Literal(k, lang="foo")#URIRef("http://www.semanticweb.org/hilaire/ontologies/2016/4/untitled-ontology-87#node-"+str_neighbor)
+        str2= ("""
+        PREFIX ns: <http://www.semanticweb.org/hilaire/ontologies/2016/4/untitled-ontology-87#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        SELECT ?mCost ?k
+        WHERE { 
+                ?edge rdf:type ns:Edge;
+                    ns:origin ?org .
+                ?edge rdf:type ns:Edge;
+                    ns:destination ?dest .
+                ?edge rdf:type ns:Edge;
+                    ns:timeStamp ?k .
+                ?edge rdf:type ns:Edge;
+                    ns:travelTime ?mCost .
+         }""")
         finalquery =  prepareQuery(str2)
 
-        count = 1
-        for i in range(0, len(ontObjList)):
-            if (i !=(AGVno-1)):                          
-                qres = ontObjList[i].g.query(finalquery, initBindings={'org': origin, 'dest':destination})#, initBindings={'org': origin, 'dest':destination})                t2=time.clock()
-                if (len(qres)!=0):
-                    print("Observation found in other AGV(s) for the set of nodes")
-                    for row in qres:
-                        print("%s %s" % row)
-                    count = count +1
-            dictQres = { AGVno : qres}
-        return dictQres
+        count = 0
+
+        qres2 = self.g.query(finalquery, initBindings={'org': origin, 'dest':destination, 'k': k})#, initBindings={'org': origin, 'dest':destination})                t2=time.clock()
+        for row in qres2:
+            print("%s %s" % row)
+        # if (len(qres2)!=0):
+        #     print("Observation found in other AGV(s) for the set of nodes")
+        #     count = count +1
+        # print("Count", count)
                 #end if
             #end if
         #end for
+    
+if __name__ == "__main__":
+    c = 1
+    rootDic = sys.argv[1]
+    ontObj = newTT(c, rootDic)
+    currNode = 245
+    currNeighbor = 225
+    tRegd = 5
+    X_teqd = 7.90
+    itr = 1
+
+    ontObj.addNewTT(currNode, currNeighbor, tRegd, itr, X_teqd)
+    s = ontObj.serializeOnt(c)
+    ontObj.fetchOtherObs(c, 245, 225, 5)

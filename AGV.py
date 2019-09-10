@@ -46,7 +46,7 @@ class AGV(dijsktraCost):
         
         while self.pathNo <=repNo:
             ontObjList[self.ownNo-1].parseOnt(self.ownNo)
-            acRYallP = self.findPath(self.k,ontObjList)
+            acRYallP = self.findPath(self.k,ontObjList, self.mapNo)
                     
             self.all_path_cost =self.all_path_cost+self.nPathCost
             print("Path found, path cost", self.nPath, self.nPathCost) 

@@ -44,7 +44,7 @@ class dijsktraCost:
         self.f2 = os.path.join(self.dirName, self.base2 + str(self.ownNo) + self.suffix)
         self.f3 = os.path.join(self.dirName, self.base3 + str(self.ownNo) + self.suffix)
         #self.fileO2 = os.path.join(self.dirName, self.base2 + self.no + self.suffix)
-    def findPath(self,k,ontObjList):
+    def findPath(self,k,ontObjList, mapNo):
         print("Finding path in AGV ", self.ownNo )
         it = initialWeights(self.mObj,self.source)
         u = self.source
@@ -93,7 +93,7 @@ class dijsktraCost:
                         currNeighbor = self.mObj.neighbor_node_no[u][seqNeigh]
                     #end if 
                     if (currNeighbor !=self.source):
-                        outtxt3 = str(self.pathNo) + ' ' + str(self.ownNo) + ' ' + str(u) + ' ' + str(
+                        outtxt3 = str(mapNo) + ' ' + str(self.pathNo) + ' ' + str(self.ownNo) + ' ' + str(u) + ' ' + str(
                             currNeighbor) + '\n'
                         self.fid3 = open(self.f3, 'a')
                         self.fid3.write(outtxt3)

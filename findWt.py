@@ -55,15 +55,13 @@ class findWt(readObs):
             dest = currNeighbor            
                 
    
-            ontObjList[ownNO-1].fetchOtherObs(ownNO,orig,dest,self.rootDic,ontObjList)
-            
-            if (len(self.qresOther)!=0):
+            dictQres = ontObjList[ownNO-1].fetchOtherObs(ownNO,orig,dest,self.rootDic,ontObjList,tRegd)
+            XReturn = []
+            if (len(dictQres)!=0):
                 self.fid1 = open(self.file1, 'a')
-                for v, e in self.qresOther.items():  
-                    #print("len of query in other AGV(s) for set of nodes:", len(e))
-                    if len(e) >0:
-                        for row in e:
-                            XReturn= row[0]
+                for v, e in dictQres.items():
+                    if (v == ownNO):
+                        XReturn.append() = row[0]
                             k = row[1]
                             XReturn = float(XReturn)
                             k = int(k)
