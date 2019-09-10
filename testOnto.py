@@ -129,10 +129,12 @@ class newTT():
         finalquery =  prepareQuery(str2)
 
         count = 0
-
+        res = {}
         qres2 = self.g.query(finalquery, initBindings={'org': origin, 'dest':destination, 'k': k})#, initBindings={'org': origin, 'dest':destination})                t2=time.clock()
         for row in qres2:
             print("%s %s" % row)
+            res = {row["k"]: row["mCost"]}
+            print()
         # if (len(qres2)!=0):
         #     print("Observation found in other AGV(s) for the set of nodes")
         #     count = count +1

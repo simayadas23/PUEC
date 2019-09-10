@@ -56,12 +56,12 @@ class findWt(readObs):
                 
    
             dictQres = ontObjList[ownNO-1].fetchOtherObs(ownNO,orig,dest,self.rootDic,ontObjList,tRegd)
-            XReturn = []
+            XReturn = {}
             if (len(dictQres)!=0):
                 self.fid1 = open(self.file1, 'a')
                 for v, e in dictQres.items():
                     if (v == ownNO):
-                        XReturn.append() = row[0]
+                        XReturn = { e(1): e(0)}
                             k = row[1]
                             XReturn = float(XReturn)
                             k = int(k)
